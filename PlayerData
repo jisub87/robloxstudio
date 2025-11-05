@@ -1,0 +1,390 @@
+-- ============================================
+-- RPG 게임 - 플레이어 데이터 구조
+-- ReplicatedStorage > PlayerData (ModuleScript)
+-- ============================================
+
+local PlayerData = {}
+
+-- ============================================
+-- 기본 플레이어 데이터 템플릿
+-- ============================================
+PlayerData.DefaultData = {
+	-- 기본 정보
+	PlayerName = "",
+	PlayerId = 0,
+	Class = "Warrior", -- "Warrior", "Mage", "Archer"
+
+	-- 레벨 & 경험치
+	Level = 1,
+	Experience = 0,
+	ExperienceToNextLevel = 100,
+
+	-- 재화
+	Gold = 100,
+	Gems = 0, -- 프리미엄 재화 (선택)
+
+	-- 스탯
+	Stats = {
+		-- 기본 스탯
+		Health = 100,
+		MaxHealth = 100,
+		Mana = 50,
+		MaxMana = 50,
+
+		-- 전투 스탯
+		Damage = 10,
+		Defense = 5,
+		AttackSpeed = 1.0,
+		CritChance = 5, -- %
+		CritDamage = 150, -- %
+
+		-- 능력치
+		Strength = 10,
+		Intelligence = 10,
+		Dexterity = 10,
+		Vitality = 10,
+
+		-- 기타
+		Speed = 16,
+		StatPoints = 0 -- 레벨업 시 획득하는 스탯 포인트
+	},
+
+	-- 장비 (장착 중인 아이템)
+	Equipment = {
+		Weapon = nil, -- ItemID
+		Head = nil,
+		Chest = nil,
+		Legs = nil,
+		Feet = nil,
+		Accessory1 = nil,
+		Accessory2 = nil
+	},
+
+	-- 인벤토리 (소유한 아이템)
+	Inventory = {
+		MaxSlots = 50,
+		Items = {
+			-- [슬롯번호] = {ItemID = "iron_sword", Amount = 1, Data = {}}
+		}
+	},
+
+	-- 스킬
+	Skills = {
+		UnlockedSkills = {}, -- {"power_strike", "whirlwind", ...}
+		SkillLevels = {}, -- {power_strike = 5, whirlwind = 3, ...}
+		SkillPoints = 0
+	},
+
+	-- 퀘스트
+	Quests = {
+		Active = {}, -- 진행 중인 퀘스트
+		Completed = {}, -- 완료한 퀘스트 ID 목록
+		Daily = {
+			Quests = {},
+			LastReset = 0 -- 타임스탬프
+		}
+	},
+
+	-- 업적
+	Achievements = {
+		Unlocked = {},
+		Progress = {}
+	},
+
+	-- 통계
+	Statistics = {
+		PlayTime = 0,
+		MonstersKilled = 0,
+		Deaths = 0,
+		GoldEarned = 0,
+		QuestsCompleted = 0,
+
+		-- 몬스터별 처치 수
+		MonsterKills = {
+			-- [MonsterID] = count
+		}
+	},
+
+	-- 설정
+	Settings = {
+		SoundVolume = 100,
+		MusicVolume = 100,
+		ShowDamageNumbers = true,
+		AutoLoot = false
+	},
+
+	-- 기타
+	LastLogin = 0,
+	CreatedAt = 0
+}
+
+-- ============================================
+-- 경험치 레벨 공식
+-- ============================================
+PlayerData.LevelFormulas = {
+	-- 다음 레벨까지 필요한 경험치 계산
+	CalculateExpNeeded = function(level)
+		-- 공식: 100 * (level ^ 1.5)
+		return math.floor(100 * (level ^ 1.5))
+	end,
+
+	-- 레벨업 시 얻는 스탯 포인트
+	GetStatPointsPerLevel = function(level)
+		return 5 -- 레벨당 5 포인트
+	end,
+
+	-- 레벨업 시 스킬 포인트
+	GetSkillPointsPerLevel = function(level)
+		if level % 5 == 0 then -- 5레벨마다 2포인트
+			return 2
+		end
+		return 1
+	end,
+
+	-- 레벨에 따른 기본 스탯 증가
+	GetBaseStatIncrease = function(level, statName)
+		local increases = {
+			MaxHealth = 10,
+			MaxMana = 5,
+			Damage = 2,
+			Defense = 1
+		}
+		return increases[statName] or 0
+	end
+}
+
+-- ============================================
+-- 클래스별 시작 데이터
+-- ============================================
+PlayerData.ClassStartData = {
+	Warrior = {
+		Stats = {
+			Health = 120,
+			MaxHealth = 120,
+			Mana = 30,
+			MaxMana = 30,
+			Damage = 15,
+			Defense = 10,
+			Strength = 15,
+			Intelligence = 5,
+			Dexterity = 8,
+			Vitality = 15
+		},
+		Equipment = {
+			Weapon = "rusty_sword",
+			Chest = "leather_armor"
+		},
+		Skills = {
+			UnlockedSkills = {"power_strike"}
+		}
+	},
+
+	Mage = {
+		Stats = {
+			Health = 80,
+			MaxHealth = 80,
+			Mana = 100,
+			MaxMana = 100,
+			Damage = 8,
+			Defense = 3,
+			Strength = 5,
+			Intelligence = 20,
+			Dexterity = 8,
+			Vitality = 8
+		},
+		Equipment = {
+			Weapon = "apprentice_staff",
+			Chest = "leather_armor"
+		},
+		Skills = {
+			UnlockedSkills = {"fireball"}
+		}
+	},
+
+	Archer = {
+		Stats = {
+			Health = 100,
+			MaxHealth = 100,
+			Mana = 50,
+			MaxMana = 50,
+			Damage = 12,
+			Defense = 5,
+			Strength = 10,
+			Intelligence = 8,
+			Dexterity = 20,
+			Vitality = 10
+		},
+		Equipment = {
+			Weapon = "wooden_bow",
+			Chest = "leather_armor"
+		},
+		Skills = {
+			UnlockedSkills = {"power_shot"}
+		}
+	}
+}
+
+-- ============================================
+-- 유틸리티 함수
+-- ============================================
+
+-- 새 플레이어 데이터 생성
+function PlayerData:CreateNewData(player, class)
+	class = class or "Warrior"
+
+	-- 기본 데이터 복사
+	local newData = {}
+	for key, value in pairs(self.DefaultData) do
+		if type(value) == "table" then
+			newData[key] = self:DeepCopy(value)
+		else
+			newData[key] = value
+		end
+	end
+
+	-- 플레이어 정보 설정
+	newData.PlayerName = player.Name
+	newData.PlayerId = player.UserId
+	newData.Class = class
+	newData.CreatedAt = os.time()
+	newData.LastLogin = os.time()
+
+	-- 클래스별 시작 데이터 적용
+	if self.ClassStartData[class] then
+		local classData = self.ClassStartData[class]
+
+		-- 스탯
+		if classData.Stats then
+			for statName, value in pairs(classData.Stats) do
+				newData.Stats[statName] = value
+			end
+		end
+
+		-- 장비
+		if classData.Equipment then
+			for slot, itemID in pairs(classData.Equipment) do
+				newData.Equipment[slot] = itemID
+			end
+		end
+
+		-- 스킬
+		if classData.Skills then
+			newData.Skills = self:DeepCopy(classData.Skills)
+		end
+	end
+
+	return newData
+end
+
+-- 깊은 복사
+function PlayerData:DeepCopy(original)
+	local copy = {}
+	for key, value in pairs(original) do
+		if type(value) == "table" then
+			copy[key] = self:DeepCopy(value)
+		else
+			copy[key] = value
+		end
+	end
+	return copy
+end
+
+-- 레벨업 가능 여부 확인
+function PlayerData:CanLevelUp(data)
+	return data.Experience >= data.ExperienceToNextLevel
+end
+
+-- 다음 레벨까지 필요한 경험치 갱신
+function PlayerData:UpdateExpNeeded(data)
+	data.ExperienceToNextLevel = self.LevelFormulas.CalculateExpNeeded(data.Level)
+end
+
+-- 인벤토리 빈 슬롯 찾기
+function PlayerData:FindEmptySlot(inventory)
+	for i = 1, inventory.MaxSlots do
+		if not inventory.Items[i] then
+			return i
+		end
+	end
+	return nil
+end
+
+-- 스택 가능한 아이템 슬롯 찾기
+function PlayerData:FindStackableSlot(inventory, itemID)
+	for slot, item in pairs(inventory.Items) do
+		if item.ItemID == itemID then
+			return slot
+		end
+	end
+	return nil
+end
+
+-- 장비 슬롯 확인
+function PlayerData:GetEquipmentSlot(itemType, slot)
+	local slotMap = {
+		Weapon = "Weapon",
+		Head = "Head",
+		Chest = "Chest",
+		Legs = "Legs",
+		Feet = "Feet"
+	}
+
+	if itemType == "Armor" then
+		return slotMap[slot] or slot
+	elseif itemType == "Weapon" then
+		return "Weapon"
+	end
+
+	return nil
+end
+
+-- 총 스탯 계산 (기본 + 장비)
+function PlayerData:CalculateTotalStats(data, itemDatabase)
+	local total = self:DeepCopy(data.Stats)
+
+	-- 장비 보너스 계산
+	for slot, itemID in pairs(data.Equipment) do
+		if itemID then
+			local item = itemDatabase:GetItem(itemID)
+			if item then
+				-- 무기 데미지
+				if item.Damage then
+					total.Damage = total.Damage + item.Damage
+				end
+
+				-- 방어구 방어력
+				if item.Defense then
+					total.Defense = total.Defense + item.Defense
+				end
+
+				-- 이동속도
+				if item.Speed then
+					total.Speed = total.Speed + item.Speed
+				end
+			end
+		end
+	end
+
+	return total
+end
+
+-- 데이터 검증
+function PlayerData:ValidateData(data)
+	-- 필수 필드 확인
+	if not data.Level or not data.Experience or not data.Stats then
+		return false, "필수 데이터 누락"
+	end
+
+	-- 값 범위 확인
+	if data.Level < 1 or data.Level > 100 then
+		return false, "잘못된 레벨"
+	end
+
+	if data.Gold < 0 then
+		return false, "잘못된 골드"
+	end
+
+	return true
+end
+
+return PlayerData
