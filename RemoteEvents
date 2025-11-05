@@ -1,0 +1,5 @@
+ReplicatedStorage
+└─ RemoteEvents (Folder)
+   ├─ UpdatePlayerUI (RemoteEvent)
+   ├─ UseSkill (RemoteEvent)
+   └─ RequestPlayerData (RemoteFunction)
