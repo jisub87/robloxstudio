@@ -1,5 +1,11 @@
 ReplicatedStorage
+├─ PlayerData (ModuleScript) ✅ 이미 있음
+├─ Modules (Folder)
+│  ├─ SkillDatabase (ModuleScript) ⬅️ 새로 생성
+│  └─ SkillEffects (ModuleScript) ⬅️ 새로 생성
+│
 └─ RemoteEvents (Folder)
-   ├─ UpdatePlayerUI (RemoteEvent)
-   ├─ UseSkill (RemoteEvent)
-   └─ RequestPlayerData (RemoteFunction)
+   ├─ UpdatePlayerUI (RemoteEvent) ✅
+   ├─ UseSkill (RemoteEvent) ✅
+   ├─ RequestPlayerData (RemoteFunction) ✅
+   └─ PlaySkillEffect (RemoteEvent) ⬅️ 새로 생성
