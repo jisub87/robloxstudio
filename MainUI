@@ -1,0 +1,70 @@
+StarterGui
+└─ 📱 MainUI (ScreenGui)
+   ├─ 💻 UIController (LocalScript)
+   │
+   ├─ 📊 ExpBar (Frame)
+   │  ├─ 🔳 Fill (Frame)
+   │  │  └─ 🔲 UICorner
+   │  ├─ 📝 Text (TextLabel)
+   │  └─ 🔲 UICorner
+   │
+   ├─ 💰 GoldFrame (Frame)
+   │  ├─ 🔢 Amount (TextLabel)
+   │  └─ 🔲 UICorner
+   │
+   ├─ 🎮 MenuButtons (Frame)
+   │  └─ 📋 UIListLayout
+   │
+   ├─ 👤 PlayerInfo (Frame)
+   │  ├─ 💚 HealthBar (Frame)
+   │  │  ├─ 🔳 Fill (Frame)
+   │  │  │  └─ 🔲 UICorner
+   │  │  ├─ 📝 Text (TextLabel)
+   │  │  └─ 🔲 UICorner
+   │  │
+   │  ├─ 💙 ManaBar (Frame)
+   │  │  ├─ 🔳 Fill (Frame)
+   │  │  │  └─ 🔲 UICorner
+   │  │  ├─ 📝 Text (TextLabel)
+   │  │  └─ 🔲 UICorner
+   │  │
+   │  ├─ 🏷️ LevelLabel (TextLabel)
+   │  └─ 📝 PlayerName (TextLabel)
+   │
+   ├─ ⚡ QuickSlots (Frame)
+   │  └─ 📋 UIListLayout
+   │
+   └─ 🎨 SkillContainer (Frame)
+      ├─ ⚔️ AttackButton (ImageButton)
+      │  ├─ 🔲 UICorner
+      │  ├─ 🎨 UIGradient
+      │  ├─ 📝 TextLabel
+      │  └─ 📝 TextLabel
+      │
+      ├─ 🛡️ SkillE (ImageButton)
+      │  ├─ 🔲 UICorner
+      │  ├─ 🎨 UIGradient
+      │  ├─ 🏷️ KeyLabel (TextLabel)
+      │  ├─ 🏷️ NameLabel (TextLabel)
+      │  └─ 📝 TextLabel
+      │
+      ├─ 🔥 SkillF (ImageButton)
+      │  ├─ 🔲 UICorner
+      │  ├─ 🎨 UIGradient
+      │  ├─ 🏷️ KeyLabel (TextLabel)
+      │  ├─ 🏷️ NameLabel (TextLabel)
+      │  └─ 📝 TextLabel
+      │
+      ├─ ⚡ SkillQ (ImageButton)
+      │  ├─ 🔲 UICorner
+      │  ├─ 🎨 UIGradient
+      │  ├─ 🏷️ KeyLabel (TextLabel)
+      │  ├─ 🏷️ NameLabel (TextLabel)
+      │  └─ 📝 TextLabel
+      │
+      └─ 💫 SkillR (ImageButton)
+         ├─ 🔲 UICorner
+         ├─ 🎨 UIGradient
+         ├─ 🏷️ KeyLabel (TextLabel)
+         ├─ 🏷️ NameLabel (TextLabel)
+         └─ 📝 TextLabel
