@@ -33,6 +33,11 @@ StarterGui
    │
    ├─ ⚡ QuickSlots (Frame)
    │  └─ 📋 UIListLayout
+   │     ├─ CharacterBtn (ImageButton)
+   │     ├─ InventoryBtn (ImageButton)
+   │     ├─ QuestBtn (ImageButton)
+   │     ├─ SettingsBtn (ImageButton)
+   │     └─ ShopBtn (ImageButton)
    │
    └─ 🎨 SkillContainer (Frame)
       ├─ ⚔️ AttackButton (ImageButton)
